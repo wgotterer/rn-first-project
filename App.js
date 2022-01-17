@@ -1,10 +1,11 @@
 import GoalItem from './components/GoalItem';
 import GoalInput from './components/GoalInput';
-import { StyleSheet, View, FlatList } from 'react-native';
+import { StyleSheet, View, FlatList, Button } from 'react-native';
 import React, {useState} from 'react';
 
 export default function App() {
   const [dayGoals, setdayGoals] = useState([])
+  const [isAddMode, setIsAddMode] = useState(false)
 
   // this handle function is passed as a prop to GoalItem 
   // to set state when onPress occurs. the function will recieve 
@@ -19,6 +20,7 @@ export default function App() {
       {id: Math.random().toString(), value: goalTitle}
     ])
     resetGoalTitle('')
+    setIsAddMode(false)
   }
 
   const handleRemoveGoal = goalId => {
@@ -26,9 +28,14 @@ export default function App() {
       return currentGoals.filter((goal) => goal.id !== goalId)
     })
   }
+
+  const handleCancelGoalAdd = () => {
+    setIsAddMode(false)
+  }
   return (
     <View style={styles.screen}>
-      <GoalInput handleAddGoal={handleAddGoal}/>
+      <Button title="Add New Goal" onPress={ ()=> setIsAddMode(true)} />
+      <GoalInput visible={isAddMode} handleAddGoal={handleAddGoal} handleCancelGoalAdd={handleCancelGoalAdd}/>
       {/* use flatlist instead of .map() because flatlist has 
       lazy loading, only shows what's on the screen,
        the  and can inhance permance. keyExtractor extracts a unique key for each item
